@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burrow Attach Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --accent: #7c5cfc;
+      --accent-glow: rgba(124, 92, 252, 0.25);
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --green: #22c55e;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--green);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+    }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 7rem 1.5rem 5rem;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(124, 92, 252, 0.12);
+      border: 1px solid rgba(124, 92, 252, 0.3);
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      max-width: 700px;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #a78bfa, #7c5cfc, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.65;
+      margin-bottom: 2.5rem;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+    /* ── FEATURES ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 4rem 0;
+    }
+
+    .feature {
+      background: var(--surface);
+      padding: 2.25rem 2rem;
+      transition: background 0.15s;
+    }
+
+    .feature:hover { background: #161622; }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #a78bfa, #7c5cfc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* ── BURROW BADGE ── */
+    .burrow-badge {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(18, 18, 26, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+      z-index: 100;
+    }
+
+    .burrow-badge:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .burrow-badge .badge-logo {
+      width: 16px; height: 16px;
+      border-radius: 4px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      .hero { padding: 5rem 1.25rem 4rem; }
+      .stats { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="logo" href="#">burrow<span>.</span>app</a>
+    <div class="nav-badge">
+      <div class="dot"></div>
+      Live on GitHub Pages
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-chip">Scenario 5 &mdash; Attach existing repo</div>
+    <h1>Ship apps that <em>actually work</em></h1>
+    <p class="hero-sub">
+      Burrow attached this repo without recreating it, depth-cloned the history,
+      and deployed it to GitHub Pages &mdash; all in one turn.
+    </p>
+    <div class="cta-row">
+      <a class="btn-primary" href="https://burrow.app">Try Burrow</a>
+      <a class="btn-ghost" href="https://github.com">View on GitHub</a>
+    </div>
+  </section>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🔗</div>
+      <h3>Attach any repo</h3>
+      <p>Connect an existing GitHub repo &mdash; Burrow clones it and picks up exactly where you left off.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>Deploy in seconds</h3>
+      <p>Every turn auto-pushes to your branch. GitHub Pages picks it up. No CI config, no waiting.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📱</div>
+      <h3>Phone-first</h3>
+      <p>Chat on your phone, get a real app back. Burrow handles the engineering &mdash; you handle the vision.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🛡️</div>
+      <h3>No secrets in source</h3>
+      <p>API keys stay in env vars. Your repo stays clean even if it goes public.</p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div>
+      <div class="stat-value">10 min</div>
+      <div class="stat-label">typical build time</div>
+    </div>
+    <div>
+      <div class="stat-value">0 config</div>
+      <div class="stat-label">to deploy</div>
+    </div>
+    <div>
+      <div class="stat-value">100%</div>
+      <div class="stat-label">yours on GitHub</div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 burrow-attach-test &mdash; deployed automatically via Burrow
+  </footer>
+
+  <a class="burrow-badge" href="https://burrow.app" target="_blank" rel="noopener">
+    <div class="badge-logo">B</div>
+    Made with Burrow
+  </a>
+
+</body>
+</html>
